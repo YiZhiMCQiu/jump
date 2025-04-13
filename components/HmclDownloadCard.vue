@@ -13,13 +13,13 @@ function download(type) {
 
   const link = document.createElement('a');
   link.href = props.url.replace("maven.aliyun.com/repository/central/", "mirrors.cloud.tencent.com/nexus/repository/maven-public/");
-  if (type === "exe") link.href = link.href.replace(".jar", ".exe")
+  if (type === "exe") link.href = link.href.replace(".jar", ".exe");
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 }
 
-function open(url){
+function open(url) {
   const link = document.createElement('a');
   link.target = '_blank';
   link.href = url;
