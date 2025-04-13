@@ -4,8 +4,14 @@ import HmclDownloadCard from "~/components/HmclDownloadCard.vue";
 async function fetchData(url) {
   try {
     const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
+    }
     const data = await response.json();
-    return JSON.parse(atob(data.content));
+    if (typeof data.content === 'string' && data.encoding === 'base64') {
+      return JSON.parse(atob(data.content));
+    }
+    return data;
   } catch (error) {
     console.error('Error:', error.message);
     throw error;
@@ -13,15 +19,14 @@ async function fetchData(url) {
 }
 
 const urls = {
-  stable: 'https://api.github.com/repos/HMCL-dev/HMCL-Update/contents/update/stable.json',
-  dev: 'https://api.github.com/repos/HMCL-dev/HMCL-Update/contents/update/dev.json',
-  prs: 'https://api.github.com/repos/burningtnt/HMCL-Snapshot-Update/contents/artifacts/v5/uploaders/8mi.139/HMCL-dev/HMCL/main/gradle.yml.jar.json'
+  stable: 'https://api.codetabs.com/v1/proxy/?quest=https://gitee.com/Glavo/HMCL-Update/raw/main/update/stable.json',
+  dev: 'https://api.codetabs.com/v1/proxy/?quest=https://gitee.com/Glavo/HMCL-Update/raw/main/update/dev.json'
 };
 
 const [stable, dev, prs] = await Promise.all([
   fetchData(urls.stable),
   fetchData(urls.dev),
-  fetchData(urls.prs)
+  fetchData("https://hmcl-snapshot-update-73w.pages.dev/v5/uploaders/8mi.139/burningtnt/HMCL/prs/gradle.yml.jar.json")
 ]);
 
 const versions = [
